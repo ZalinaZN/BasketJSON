@@ -9,13 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClientLog {
-    protected List<String[]> log = new ArrayList<>();
+    final List<String[]> log = new ArrayList<>();
 
-    protected void log(int productNum, int amount) {
+    final void log(int productNum, int amount) {
         log.add(new String[]{"" + productNum, "" + amount});
     }
 
-    protected void exportAsCSV(File txtFile) {
+    final void exportAsCSV(File txtFile) {
         if (!txtFile.exists()) {
             log.add(0, new String[]{"productNum,amount"});
         }

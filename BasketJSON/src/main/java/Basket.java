@@ -38,12 +38,13 @@ public class Basket {
         System.out.printf("Итого: %d руб.", summProduct);
     }
 
-    public void saveJSON(File file) throws IOException {
+    public  void saveJSON(File file) throws IOException {
         try (PrintWriter out = new PrintWriter(file)) {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             String json = gson.toJson(this);
             out.print(json);
-
+        }catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -57,11 +58,48 @@ public class Basket {
             }
             Gson gson = new Gson();
             basket = gson.fromJson(builder.toString(), Basket.class);
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         return basket;
     }
+    public void saveTxt(File textFile) throws IOException {
+        try (PrintWriter out = new PrintWriter(textFile)) {
+            for (String products : product) {
+                out.print(products + " ");
+            }
+            out.println();
+            for (int pr : price) {
+                out.print(pr + " ");
+            }
+            out.println();
+            for (int a : amountPr) {
+                out.print(a + " ");
+            }
+            out.println();
+        }
+    }
+    public static Basket loadFromTxtFile(File textFile){//throws IOException{
+        Basket basket = new Basket();
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(textFile))) {
+            String productStr = bufferedReader.readLine();
+            String priceStr = bufferedReader.readLine();
+            String amountStr = bufferedReader.readLine();
+
+            basket.product = productStr.split(" ");
+            basket.price = Arrays.stream(priceStr.split(" "))
+                    .map(Integer::parseInt)
+                    .mapToInt(Integer::intValue)
+                    .toArray();
+            basket.amountPr = Arrays.stream(amountStr.split(" "))
+                    .map(Integer::parseInt)
+                    .mapToInt(Integer::intValue)
+                    .toArray();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return basket;
+    }
+
 }
 
